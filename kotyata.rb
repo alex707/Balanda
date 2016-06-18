@@ -8,6 +8,9 @@ require 'pp'
 
 obj = JSON.parse( IO.read("_1.json", encoding:'utf-8') )
 impTovUslug = JSON.parse( IO.read("impTovUslug.json", encoding:'utf-8') )
+vVP = JSON.parse( IO.read("vVP.json", encoding:'utf-8') )
+pIA = JSON.parse( IO.read("pIA.json", encoding:'utf-8') )
+aRFmpb = JSON.parse( IO.read("aRFmpb.json", encoding:'utf-8') )
 
 token = '188659714:AAHB5aHkp63cp6v6_LQRbaEGXhujhQer1-U'
 deb = "DEBUG:\n"
@@ -78,10 +81,39 @@ Telegram::Bot::Client.run(token) do |bot|
 				if ((elem['year'] == params[1][0]['year']) && (elem['quarter'] == params[1][1]['quarter']))
 					p elem['value']
 					p elem['kind']
+					
 				end
 			end
 		elsif
-			p ""
+			if vVP['name'] == params[0]
+				vVP['data'].each do |elem|
+					if elem['year'] == params[1][0]['year']
+						p elem['value']
+						deb << elem['value'].to_s
+						deb << "\n"
+					end
+				end
+			end
+		elsif
+			if pIA['name'] == params[0]
+				pIA['data'].each do |elem|
+					if elem['year'] == params[1][0]['year']
+            p elem['value']
+            deb << elem['value'].to_s
+            deb << "\n"
+					end
+				end
+			end
+		elsif
+			if aRFmpb['name'] == params[0]
+				aRFmpb['data'].each do |elem|
+					if elem['year'] == params[1][0]['year']
+            p elem['value']
+            deb << elem['value'].to_s
+            deb << "\n"
+					end
+				end
+			end
 		end
 
 		deb << s
