@@ -13,7 +13,7 @@ pIA = JSON.parse( IO.read("pIA.json", encoding:'utf-8') )
 aRFmpb = JSON.parse( IO.read("aRFmpb.json", encoding:'utf-8') )
 
 token = '188659714:AAHB5aHkp63cp6v6_LQRbaEGXhujhQer1-U'
-deb = "DEBUG:\n"
+deb = "DEBUG START\n"
 
 params = []
 ord_params = []
@@ -26,8 +26,7 @@ Telegram::Bot::Client.run(token) do |bot|
 		s = message.text.mb_chars.downcase!.to_s
 
 		deb << "source:\n"
-		deb << s << "\n"
-		deb << "after regExp:\n"
+		deb << s << "\n\n"
 
 		obj['dataSets'].each do |elem|
 			if !s[/#{elem['regEx']}/].nil?
@@ -51,19 +50,36 @@ Telegram::Bot::Client.run(token) do |bot|
 		p params
 		p	"----------------------------"
 
-		#ord2_params.each do |o2param|
-		#	o2param.each { |k, v|
+		ord2_params.map { |o2param|
+			o2param.map { |k, v|
+				obj['parameters'].each do |elem|
+					if elem['name'] == k
+						elem['values'].each { |value|
+							if !s[/#{value['regEx']}/].nil?
+								o2param[k] = value['value']
+							end
+						}
+					end
+				end
+			}
+		}
+
+		#ord2_params.map do |o2param|
+		#	p o2param
+		#	o2param.map { |k, v|
 		#		obj['parameters'].each do |elem|
-		#			p k
-		#			p elem['name']
 		#			if elem['name'] == k
 		#				elem['values'].each { |value|
 		#					p "=_+_+_+_+_+_="
-		#					p s
 		#					p value['regEx']
 		#					p !s[/#{value['regEx']}/].nil?
 		#					if !s[/#{value['regEx']}/].nil?
+		#						p "=====+"
+		#						p v
+		#						p value['value']
 		#						v = value['value']
+		#						p v
+		#						p "=====+"
 		#					end
 		#				}
 		#			end
@@ -71,7 +87,10 @@ Telegram::Bot::Client.run(token) do |bot|
 		#		#p k
 		#		#p v
 		#	}
+		#	p o2param
 		#end
+
+		p ord2_params
 
 		p	"----------------------------"
 		params << ord2_params
@@ -79,16 +98,16 @@ Telegram::Bot::Client.run(token) do |bot|
 		if impTovUslug['name'] == params[0]
 			impTovUslug['data'].each do |elem|
 				if ((elem['year'] == params[1][0]['year']) && (elem['quarter'] == params[1][1]['quarter']))
-					p elem['value']
-					p elem['kind']
-					
+					deb << elem['kind'].to_s
+					deb << "\n"
+					deb << elem['value'].to_s
+					deb << "\n"
 				end
 			end
 		elsif
 			if vVP['name'] == params[0]
 				vVP['data'].each do |elem|
 					if elem['year'] == params[1][0]['year']
-						p elem['value']
 						deb << elem['value'].to_s
 						deb << "\n"
 					end
@@ -98,7 +117,6 @@ Telegram::Bot::Client.run(token) do |bot|
 			if pIA['name'] == params[0]
 				pIA['data'].each do |elem|
 					if elem['year'] == params[1][0]['year']
-            p elem['value']
             deb << elem['value'].to_s
             deb << "\n"
 					end
@@ -108,7 +126,6 @@ Telegram::Bot::Client.run(token) do |bot|
 			if aRFmpb['name'] == params[0]
 				aRFmpb['data'].each do |elem|
 					if elem['year'] == params[1][0]['year']
-            p elem['value']
             deb << elem['value'].to_s
             deb << "\n"
 					end
@@ -116,9 +133,9 @@ Telegram::Bot::Client.run(token) do |bot|
 			end
 		end
 
-		deb << s
 		deb << "\nDEBUG END"
 
+		p params
 		bot.api.send_message(chat_id: message.chat.id, text: deb)
 		deb.clear
 		ord2_params.clear
