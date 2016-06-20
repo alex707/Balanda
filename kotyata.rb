@@ -14,7 +14,7 @@ vVP = 		JSON.parse( IO.read("vVP.json", encoding:'utf-8') )
 aRFmpb = 	JSON.parse( IO.read("aRFmpb.json", encoding:'utf-8') )
 pIA = 		JSON.parse( IO.read("pIA.json", encoding:'utf-8') )
 rVPnDNpSRF = JSON.parse( IO.read("rVPnDNpSRF.json", encoding:'utf-8') )
-
+vRPnDNUSA = JSON.parse( IO.read("vRPnDNUSA.json", encoding:'utf-8') )
 impTovUslug = JSON.parse( IO.read("impTovUslug.json", encoding:'utf-8') )
 
 token = '188659714:AAHB5aHkp63cp6v6_LQRbaEGXhujhQer1-U'
@@ -35,7 +35,7 @@ Telegram::Bot::Client.run(token) do |bot|
 
 			s = message.text.mb_chars.downcase!.to_s
 
-			deb << "|" << "\n\n"
+			deb << "" << "\n"
 
 			metaData['dataSets'].each do |elem|
 				if !s[/#{elem['regEx']}/].nil?
@@ -176,6 +176,7 @@ Telegram::Bot::Client.run(token) do |bot|
 				p "some problem with this data. I DONT UNDERSTAND YOU, BABY"
 			end
 
+			deb << "#{metaData['noData']}" if deb.length < 10
 			p params
 			p deb
 			bot.api.send_message(chat_id: message.chat.id, text: deb)
